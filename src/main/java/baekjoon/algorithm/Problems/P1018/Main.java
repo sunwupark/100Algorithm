@@ -11,8 +11,11 @@ public class Main {
 
     static int N;
     static int M;
-    static char[][] arr;
+    static boolean[][] arr;
     static List<Integer> result = new ArrayList<>();
+
+    public static  int min = 64;
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -21,48 +24,49 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        arr = new char[N][M];
+        arr = new boolean[N][M];
         for (int i = 0; i < N; i++) {
             String inputs = br.readLine();
             for(int j = 0; j < M; j++){
-                arr[i][j] = inputs.charAt(j);
+                if(inputs.charAt(j) == 'B'){
+                    arr[i][j] = true;
+                } else{
+                    arr[i][j] = false;
+                }
             }
         }
 
-        char previous = arr[0][0];
 
-        for (int i = 0; i < N; i++) {
-            for(int j = 0; j <M; j++){
-                if()
+        for(int i = 0; i < N-7; i++){
+            for(int j = 0; j < M-7; j++){
+                find(i, j);
             }
         }
+
+        System.out.println(min);
     }
 
-    static void check(int x, int y, char[][] arr, int count){
-        if(x-1 > -1){
-            if(arr[x-1][y] == arr[x][y]){
-                if(arr[x-1][y] == 'B')
-                    arr[x][y] = 'W';
-                else
-                    arr[x][y] = 'B';
-                count++;
+    static void find(int i, int j) {
+        int count = 0;
+        boolean start = arr[i][j];
+        for (int k = i; k < i + 8; k++) {
+            for (int l = j; l < j + 8; l++) {
+
+                if (start != arr[k][l]) {
+                    count++;
+                }
+                start = !start;
+
             }
-        } else if(y-1 > -1){
-            if(arr[x][y-1] == arr[x][y]){
-                if(arr[x][y-1] == 'B')
-                    arr[x][y] = 'W';
-                else
-                    arr[x][y] = 'B';
-                count++;
-            }
+            start = !start;
         }
 
-        if(x+1 < N){
-            check(x+1,y,arr, count);
-        } else if(y+1 < N){
-            check(0, y+1, arr, count);
-        } else{
-            result.add(count);
-        }
+        count = Math.min(count, 64 - count);
+
+        /*
+         * 이전까지의 경우 중 최솟값보다 현재 count 값이
+         * 더 작을 경우 최솟값을 갱신
+         */
+        min = Math.min(min, count);
     }
 }
